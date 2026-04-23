@@ -10,7 +10,8 @@ function App() {
   const [stats, setStats] = useState({ total: 0, present: 0, absent: 0, late: 0 });
   const [lastUpdated, setLastUpdated] = useState('');
 
-  const API_URL = import.meta.env.VITE_API_URL;
+  const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const API_URL = `${baseURL.replace(/\/$/, '')}/api/attendance`;
 
   const updateTime = () => {
     const now = new Date();
