@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const attendanceSchema = new mongoose.Schema({
+  rollNumber: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   name: {
     type: String,
     required: true,
@@ -12,26 +17,26 @@ const attendanceSchema = new mongoose.Schema({
     trim: true,
   },
   date: {
-    type: String,
+    type: String,   // stored as "YYYY-MM-DD"
     required: true,
   },
-  time: {
+  entryTime: {
+    type: String,   // "HH:MM" (24-hr) — recorded on first punch
+    default: null,
+  },
+  exitTime: {
+    type: String,   // "HH:MM" (24-hr) — recorded on second punch (after 1 hr)
+    default: null,
+  },
+  status: {
     type: String,
     required: true,
-  },
-  classTime: {
-    type: String,
-    default: "22:00",
-  },
-  attendance: {
-    type: String,
-    required: true,
-    enum: ['Present', 'Absent'],
-  },
-  lateEntry: {
-    type: Boolean,
-    default: false,
+    enum: ['Present', 'Late Present', 'Absent'],
+    default: 'Absent',
   },
 }, { timestamps: true });
+
+// Compound unique index — one record per roll number per day
+attendanceSchema.index({ rollNumber: 1, date: 1 }, { unique: true });
 
 module.exports = mongoose.model('Attendance', attendanceSchema);
