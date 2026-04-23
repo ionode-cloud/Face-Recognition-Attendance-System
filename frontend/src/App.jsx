@@ -10,8 +10,10 @@ function App() {
   const [stats, setStats] = useState({ total: 0, present: 0, absent: 0, late: 0 });
   const [lastUpdated, setLastUpdated] = useState('');
 
-  const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-  const API_URL = `${baseURL.replace(/\/$/, '')}/api/attendance`;
+  const defaultBaseURL = import.meta.env.DEV ? 'http://localhost:5000' : 'https://face-recognition-attendance-system-4evl.onrender.com';
+  let baseURL = import.meta.env.VITE_API_URL || defaultBaseURL;
+  baseURL = baseURL.replace(/\/$/, '').replace(/\/api\/attendance$/, '');
+  const API_URL = `${baseURL}/api/attendance`;
 
   const updateTime = () => {
     const now = new Date();
