@@ -10,6 +10,7 @@ function App() {
   const [stats, setStats]               = useState({ total: 0, present: 0, late: 0, absent: 0 });
   const [lastUpdated, setLastUpdated]   = useState('');
   const [filter, setFilter]             = useState('All');
+  const [searchTerm, setSearchTerm]     = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [deleting, setDeleting]         = useState(false);
@@ -106,11 +107,14 @@ function App() {
 
   // ── Filtered records ──────────────────────────────────────────────────────
   const filteredRecords = records.filter(r => {
-    if (filter === 'All')          return true;
-    if (filter === 'Present')      return r.status === 'Present';
-    if (filter === 'Late Present') return r.status === 'Late Present';
-    if (filter === 'Absent')       return r.status === 'Absent';
-    return true;
+    const matchesFilter = (filter === 'All') 
+      ? true 
+      : r.status === filter;
+    
+    const matchesSearch = r.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         r.rollNumber.toString().toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesFilter && matchesSearch;
   });
 
   // ── Status badge ──────────────────────────────────────────────────────────
@@ -228,6 +232,15 @@ function App() {
                 <option value="Late Present">Late Present</option>
                 <option value="Absent">Absent</option>
               </select>
+              <div className="search-wrapper">
+                <input
+                  type="text"
+                  placeholder="Search name or roll..."
+                  className="form-control search-input"
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
+              </div>
             </div>
             <div className="controls-right">
               <span className="last-updated">
