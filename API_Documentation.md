@@ -106,11 +106,6 @@ curl -X GET http://localhost:5000/api/attendance
 ]
 ```
 
-> Returns an **empty array `[]`** if no records exist — not an error.
-
----
-
----
 
 # 🔵 POST — Create Attendance / Punch
 
@@ -146,24 +141,6 @@ POST /api/attendance/punch
   "time": "10:25"
 }
 ```
-
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `rollNumber` | String | ✅ | e.g. `"CS2101"` |
-| `name` | String | ✅ | Student full name |
-| `branch` | String | ✅ | Department name |
-| `time` | String | ✅ | Current time as `"HH:MM"` in 24-hr format |
-
-> `date` is **auto-set** to today's date in IST — do **not** send it.
-
-### How to use with cURL
-```bash
-curl -X POST http://localhost:5000/api/attendance/punch \
-  -H "Content-Type: application/json" \
-  -d '{"rollNumber":"CS2101","name":"Jyotiranjan Behera","branch":"Computer Science","time":"10:25"}'
-```
-
----
 
 ### ✅ Response — 201 Created (1st punch / Entry)
 ```json
@@ -201,35 +178,6 @@ curl -X POST http://localhost:5000/api/attendance/punch \
 }
 ```
 
-### ❌ Response — 409 Conflict (Exit too early, < 1 hour since entry)
-```json
-{
-  "message": "Exit not allowed yet. You need to wait 35 more minute(s) after entry.",
-  "eligibleAt": "11:25",
-  "data": { ... }
-}
-```
-
-### ❌ Response — 409 Conflict (Both entry + exit already done)
-```json
-{
-  "message": "Both entry and exit already recorded for today.",
-  "data": { ... }
-}
-```
-
-### ❌ Response — 400 Bad Request (Missing fields)
-```json
-{
-  "message": "All fields (rollNumber, name, branch, time) are required."
-}
-```
-
----
-
-## Endpoint 3 — Direct Insert (Admin / Manual Entry)
-
-```
 POST /api/attendance
 ```
 
